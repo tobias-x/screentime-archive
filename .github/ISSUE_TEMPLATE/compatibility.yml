@@ -1,0 +1,32 @@
+name: Doesn't work on my Mac
+description: No data, wrong numbers, or errors on your macOS version
+labels: [compatibility]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Apple's Screen Time storage is undocumented and changes between macOS versions, so reports like this are how support for new versions gets added.
+  - type: input
+    id: versions
+    attributes:
+      label: macOS and iOS versions
+      placeholder: macOS 15.7.3, iOS 26.0
+    validations:
+      required: true
+  - type: textarea
+    id: diagnose
+    attributes:
+      label: Output of `screentime-archiver --diagnose`
+      description: |
+        Run `"$HOME/Library/Application Support/ScreenTimeArchive/bin/screentime-archiver" --diagnose` in a terminal that has Full Disk Access.
+        It prints counts and file formats only, no app names or usage details.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: For example "iPhone missing", "totals don't match Screen Time in Settings", or an error from the log.
+    validations:
+      required: true
