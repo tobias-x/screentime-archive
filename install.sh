@@ -71,6 +71,8 @@ EOF
 
 for label in $ARCHIVER_LABEL $APP_LABEL; do
     launchctl bootout "gui/$UID_NUM/$label" 2>/dev/null || true
+    # bootout returns before a running job has exited; bootstrapping too early fails with error 5.
+    for _ in {1..50}; do launchctl print "gui/$UID_NUM/$label" >/dev/null 2>&1 || break; sleep 0.1; done
     launchctl bootstrap "gui/$UID_NUM" "$AGENTS/$label.plist"
 done
 
