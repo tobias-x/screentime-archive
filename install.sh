@@ -22,7 +22,14 @@ fi
 ./build.sh
 
 mkdir -p "$SUPPORT/bin" "$HOME/Applications" "$LOGDIR" "$AGENTS"
-install -m 755 build/screentime-archiver "$BIN"
+# Only replace the archiver when it actually changed: macOS ties Full Disk Access to the exact binary,
+# so an identical (reproducible) build keeps its permission.
+if cmp -s build/screentime-archiver "$BIN"; then
+    ARCHIVER_CHANGED=0
+else
+    install -m 755 build/screentime-archiver "$BIN"
+    ARCHIVER_CHANGED=1
+fi
 rm -rf "$APP"
 cp -R build/ScreenTimeBar.app "$APP"
 
@@ -74,7 +81,12 @@ echo "  app      : $APP"
 echo "  archive  : $SUPPORT/archive.sqlite"
 echo "  log      : $LOGDIR/archiver.log"
 echo
-echo "Next: give the archiver Full Disk Access (the app doesn't need it):"
-echo "  System Settings › Privacy & Security › Full Disk Access › + , then press ⌘⇧G and paste:"
-echo "  $BIN"
-echo "Then run:  launchctl kickstart gui/$UID_NUM/$ARCHIVER_LABEL   (or click ↻ in the menu bar app)"
+if (( ARCHIVER_CHANGED )); then
+    echo "The archiver binary changed, so it needs Full Disk Access (again). The app doesn't need it."
+    echo "  System Settings › Privacy & Security › Full Disk Access: remove any old screentime-archiver"
+    echo "  entry with −, then click +, press ⌘⇧G and paste:"
+    echo "  $BIN"
+    echo "Then run:  launchctl kickstart gui/$UID_NUM/$ARCHIVER_LABEL   (or click ↻ in the menu bar app)"
+else
+    echo "Archiver unchanged, so its existing Full Disk Access still applies."
+fi

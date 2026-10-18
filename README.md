@@ -51,9 +51,10 @@ asks launchd to run the archiver.
 To remove everything: `./uninstall.sh` (your archive is kept), or `./uninstall.sh --delete-archive`.
 
 > [!NOTE]
-> The binaries are ad-hoc signed, and macOS ties Full Disk Access to the exact build. **After
-> rebuilding or reinstalling, remove the archiver from Full Disk Access and add it again.** The menu
-> bar app shows a warning when the last run failed for this reason.
+> The binaries are ad-hoc signed, and macOS ties Full Disk Access to the exact build. `install.sh`
+> only replaces the archiver when its code changed. When it does, macOS switches the existing Full
+> Disk Access entry **off** even though it's still listed: remove it with − and add it again. The
+> menu bar app shows a warning when a run fails for this reason.
 
 ## Your archive
 
